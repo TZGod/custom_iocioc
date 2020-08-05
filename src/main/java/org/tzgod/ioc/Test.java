@@ -1,7 +1,6 @@
 package org.tzgod.ioc;
 
-import com.qianfeng.ioc.framework.InjectionContext;
-
+import org.tzgod.ioc.framework.InjectionContext;
 
 public class Test {
 
@@ -13,7 +12,7 @@ public class Test {
 //        Class<?>[] classes = IWater.class.getDeclaredClasses();
 //        System.out.println(classes);
 
-        InjectionContext injectionContext = new InjectionContext("com.qianfeng.ioc");
+        InjectionContext injectionContext = new InjectionContext("org.tzgod.ioc");
         try {
             Leader leader = (Leader) injectionContext.getBean("leader");
             System.out.println(leader);

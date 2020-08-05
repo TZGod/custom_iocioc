@@ -1,6 +1,7 @@
 package org.tzgod.ioc;
 
-import com.qianfeng.ioc.framework.annotation.Component;
+
+import org.tzgod.ioc.framework.annotation.Component;
 
 @Component
 public class Coffee implements IWater{

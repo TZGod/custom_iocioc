@@ -1,6 +1,7 @@
 package org.tzgod.ioc;
 
-import com.qianfeng.ioc.framework.annotation.Component;
+
+import org.tzgod.ioc.framework.annotation.Component;
 
 import java.io.File;
 import java.net.URL;
@@ -17,7 +18,7 @@ public class Test2 {
      * @param args
      */
     public static void main(String[] args) throws ClassNotFoundException {
-        String basePackage = "com.qianfeng.ioc";
+        String basePackage = "org.tzgod.ioc";
         URL resource = Test2.class.getResource("/");
         System.out.println(resource.getPath());
         String resourcePath = resource.getPath();

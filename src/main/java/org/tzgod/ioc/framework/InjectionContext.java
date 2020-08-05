@@ -1,9 +1,10 @@
 package org.tzgod.ioc.framework;
 
-import com.qianfeng.ioc.Test2;
-import com.qianfeng.ioc.framework.annotation.Autowired;
-import com.qianfeng.ioc.framework.annotation.Component;
-import com.qianfeng.ioc.framework.exception.UnexpectedBeanDefitionalException;
+
+import org.tzgod.ioc.Test2;
+import org.tzgod.ioc.framework.annotation.Autowired;
+import org.tzgod.ioc.framework.annotation.Component;
+import org.tzgod.ioc.framework.exception.UnexpectedBeanDefitionalException;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -16,22 +17,16 @@ import java.util.List;
  * 秘书：自定IOC框架
  */
 public class InjectionContext {
-
     private final static HashMap<Class, List<Class>> fatherSonHashMap = new HashMap<Class, List<Class>>();
-
     //beanmap用来放初始化好的对象。id：对象
     public static final  HashMap<String, Object> beansMap = new HashMap<String, Object>();
-
     private static final List<Class> beansList = new ArrayList<Class>();
-
     private String basePackage;
-
     public InjectionContext() {
     }
 
     public InjectionContext(String basePackage) {
         this.basePackage = basePackage;
-
         try {
             init(basePackage);
         } catch (ClassNotFoundException e) {
@@ -58,7 +53,6 @@ public class InjectionContext {
 //            Class<Leader> leaderClass = Leader.class;
             //获取所有的属性
             Field[] declaredFields = leaderClass.getDeclaredFields();
-
             //保证单例  begin
             String id1 = getId(leaderClass);
             Object leader = beansMap.get(id1);
@@ -67,7 +61,6 @@ public class InjectionContext {
                   beansMap.put(id1,leader);
             }
             //保证单例  end
-
             //找到water
             for (int i = 0; i < declaredFields.length; i++) {
                 Field field = declaredFields[i];
@@ -79,7 +72,6 @@ public class InjectionContext {
                     //问题：如果属性的类型是一个接口，则aClass.newInstance()会出错
                     //如果此处是一个接口，则需要通过接口找到其所有的实现类，如果有多个实现类，则通过属性名称来判断使用哪一个实现类
                     Class aClass = field.getType();
-
                     //如果变量的类型是一个接口，逻辑如下
                     if (aClass.isInterface()){
                         //如果此处是一个接口，则需要通过接口找到其所有的实现类，如果有多个实现类，则通过属性名称来判断使用哪一个实现类
@@ -88,7 +80,6 @@ public class InjectionContext {
                         if (classList == null) {
                             throw new NullPointerException();
                         }
-
                         // 一个接口如果只有一个实现类，则直接注入
                         if (classList != null && classList.size() == 1) {
                             Class sonClass = classList.get(0);
@@ -102,7 +93,6 @@ public class InjectionContext {
                             } else {
                                 field.set(leader,bean);
                             }
-
                         } else {
                             //顶一个标签，用来表示这种情况：有多个实现类，但是一个都没有匹配成功
                             boolean isAutowiredFail = true;
@@ -131,14 +121,10 @@ public class InjectionContext {
                                     isAutowiredFail = false;
                                 }
                             }
-
                             if (isAutowiredFail) {
                                 throw new UnexpectedBeanDefitionalException("原本期望找到1个对象注入，但是了找到了2个，无法识别应该注入哪一个");
                             }
                         }
-
-
-
                     } else {
                         //当变量的类型不是一个接口
                         //参数1：属性所有者
@@ -154,16 +140,7 @@ public class InjectionContext {
                             field.set(leader,bean);
                         }
                     }
-
                 }
-
-
-                //declaredFields[i].getName() 获取当前属性的名称
-//                if ("water".equals(field.getName())) {
-//                    // 给water属性赋值
-//                    //参数1：属性所有者
-//                    field.set(leader,new Water());
-//                }
             }
 
             return leader;
@@ -176,17 +153,12 @@ public class InjectionContext {
         return null;
     }
 
-
-
-
-
-
     /**
      * 1、找到所有的标注有@Component注解的类
      *
      */
     private void init(String basePackage) throws Exception {
-//        String basePackage = "com.qianfeng.ioc";
+        //获取Test2路径
         URL resource = Test2.class.getResource("/");
         System.out.println(resource.getPath());
         String resourcePath = resource.getPath();
@@ -205,18 +177,12 @@ public class InjectionContext {
                 Class<?> aClass = Class.forName(basePackage + "." + split[0]);
                 Component annotation = aClass.getAnnotation(Component.class);
                 if (annotation != null) {
-
                     //为了给下方标识为1922这一处代码使用
                     beansList.add(aClass);
-
-
                     //所有Component标注的类的接口，以及接口对应的所有实现类 （此处逻辑需要在依赖注入之前执行）
                     Class<?>[] interfaces = aClass.getInterfaces();
-
                     for (int j=0; j<interfaces.length; j++) {
                         Class<?> anInterface = interfaces[j];
-
-
                         List<Class> sonList = fatherSonHashMap.get(anInterface);
                         if (sonList == null) {
                             //第一次找到这个father，就保存到map中
@@ -227,32 +193,20 @@ public class InjectionContext {
                             //第二次找到，就将fater对应的son集合获取到，并且将新的son加入集合中
                             sonList.add(aClass);
                         }
-
                     }
-
-
-
-
                 }
-
                 System.out.println(fatherSonHashMap);
                 //在有component注解的类上找他们的父类或者接口
             }
         }
-
         //--1922-此处就已经找到了所有被Component标注的类 （要对找到了类进行依赖注入）
-
         for (int i = 0,size=beansList.size(); i < size; i++) {
             Class aClass = beansList.get(i);
             Object obj = inject(aClass);
             String id = getId(aClass);
             beansMap.put(id,obj);
-
         }
-
         System.out.println(beansMap);
-
-
     }
 
     /**

@@ -1,7 +1,8 @@
 package org.tzgod.ioc;
 
-import com.qianfeng.ioc.framework.annotation.Autowired;
-import com.qianfeng.ioc.framework.annotation.Component;
+
+import org.tzgod.ioc.framework.annotation.Autowired;
+import org.tzgod.ioc.framework.annotation.Component;
 
 /**
  * 水
